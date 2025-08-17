@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.File;
+using Serilog.Sinks.Debug;
 
 namespace Deployer.Logging
 {
@@ -44,7 +46,7 @@ namespace Deployer.Logging
                 
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.ControlledBy(_levelSwitch)
-                    .WriteTo.File(_logFilePath, rollingInterval: RollingInterval.Day)
+                    .WriteTo.File(_logFilePath)
                     .WriteTo.Debug()
                     .CreateLogger();
                 
@@ -134,4 +136,3 @@ namespace Deployer.Logging
         }
     }
 }
-

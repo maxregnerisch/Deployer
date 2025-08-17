@@ -7,6 +7,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Octokit;
 using Serilog;
+using FileMode = System.IO.FileMode;
+using FileAccess = System.IO.FileAccess;
+using FileShare = System.IO.FileShare;
 
 namespace Deployer.Updates
 {
@@ -155,7 +158,7 @@ namespace Deployer.Updates
                     InstallerUrl = installerUrl,
                     ZipUrl = zipUrl,
                     IsBeta = latestRelease.Prerelease,
-                    PublishedAt = latestRelease.PublishedAt.DateTime
+                    PublishedAt = latestRelease.PublishedAt.DateTime.DateTime
                 };
                 
                 Log.Information($"Update available: {updateInfo.NewVersion}");
@@ -254,4 +257,3 @@ namespace Deployer.Updates
         public DateTime PublishedAt { get; set; }
     }
 }
-
