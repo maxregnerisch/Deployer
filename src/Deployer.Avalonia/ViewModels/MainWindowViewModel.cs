@@ -1,39 +1,80 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using ReactiveUI;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Deployer.Avalonia.UI;
 
 namespace Deployer.Avalonia.ViewModels
 {
-    public class MainWindowViewModel : ReactiveObject
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private string _statusText;
-        private double _progress;
-        private bool _isIndeterminate;
+        private string _statusMessage = "Ready";
+        private bool _isDeploying = false;
+        private bool _isDarkMode = false;
+        private double _progress = 0;
         
-        public MainWindowViewModel()
+        public string StatusMessage
         {
-            StatusText = "Ready";
-            Progress = 0;
-            IsIndeterminate = false;
+            get => _statusMessage;
+            set
+            {
+                if (_statusMessage != value)
+                {
+                    _statusMessage = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         
-        public string StatusText
+        public bool IsDeploying
         {
-            get => _statusText;
-            set => this.RaiseAndSetIfChanged(ref _statusText, value);
+            get => _isDeploying;
+            set
+            {
+                if (_isDeploying != value)
+                {
+                    _isDeploying = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CanDeploy));
+                }
+            }
+        }
+        
+        public bool CanDeploy => !IsDeploying;
+        
+        public bool IsDarkMode
+        {
+            get => _isDarkMode;
+            set
+            {
+                if (_isDarkMode != value)
+                {
+                    _isDarkMode = value;
+                    OnPropertyChanged();
+                    
+                    // Update theme
+                    ThemeManager.Instance.SetTheme(_isDarkMode ? ThemeType.Dark : ThemeType.Light);
+                }
+            }
         }
         
         public double Progress
         {
             get => _progress;
-            set => this.RaiseAndSetIfChanged(ref _progress, value);
+            set
+            {
+                if (_progress != value)
+                {
+                    _progress = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         
-        public bool IsIndeterminate
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            get => _isIndeterminate;
-            set => this.RaiseAndSetIfChanged(ref _isIndeterminate, value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

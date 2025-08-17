@@ -54,7 +54,10 @@ namespace Deployer.Avalonia.UI.Views
             {
                 // Set version text
                 var versionTextBlock = this.FindControl<TextBlock>("VersionTextBlock");
-                versionTextBlock.Text = $"Version 23H2";
+                if (versionTextBlock != null)
+                {
+                    versionTextBlock.Text = $"Version 23H2";
+                }
                 
                 // Initialize logs
                 RefreshLogs();
@@ -78,7 +81,10 @@ namespace Deployer.Avalonia.UI.Views
         private void UpdateThemeButton()
         {
             var themeButton = this.FindControl<Button>("ThemeToggleButton");
-            themeButton.Content = _isDarkMode ? "☀️" : "🌙";
+            if (themeButton != null)
+            {
+                themeButton.Content = _isDarkMode ? "☀️" : "🌙";
+            }
         }
         
         private void OnThemeChanged(object sender, ThemeType themeType)
@@ -109,11 +115,17 @@ namespace Deployer.Avalonia.UI.Views
             
             // Enable cancel button
             var cancelButton = this.FindControl<Button>("CancelButton");
-            cancelButton.IsEnabled = true;
+            if (cancelButton != null)
+            {
+                cancelButton.IsEnabled = true;
+            }
             
             // Disable deploy button
             var deployButton = this.FindControl<Button>("DeployButton");
-            deployButton.IsEnabled = false;
+            if (deployButton != null)
+            {
+                deployButton.IsEnabled = false;
+            }
             
             // Simulate deployment progress
             SimulateDeploymentProgress();
@@ -146,11 +158,17 @@ namespace Deployer.Avalonia.UI.Views
                 
                 // Disable cancel button
                 var cancelButton = this.FindControl<Button>("CancelButton");
-                cancelButton.IsEnabled = false;
+                if (cancelButton != null)
+                {
+                    cancelButton.IsEnabled = false;
+                }
                 
                 // Enable deploy button
                 var deployButton = this.FindControl<Button>("DeployButton");
-                deployButton.IsEnabled = true;
+                if (deployButton != null)
+                {
+                    deployButton.IsEnabled = true;
+                }
             }
             catch (Exception ex)
             {
@@ -159,11 +177,17 @@ namespace Deployer.Avalonia.UI.Views
                 
                 // Disable cancel button
                 var cancelButton = this.FindControl<Button>("CancelButton");
-                cancelButton.IsEnabled = false;
+                if (cancelButton != null)
+                {
+                    cancelButton.IsEnabled = false;
+                }
                 
                 // Enable deploy button
                 var deployButton = this.FindControl<Button>("DeployButton");
-                deployButton.IsEnabled = true;
+                if (deployButton != null)
+                {
+                    deployButton.IsEnabled = true;
+                }
             }
         }
         
@@ -189,57 +213,72 @@ namespace Deployer.Avalonia.UI.Views
                 var compatibilityStatusTextBlock = this.FindControl<TextBlock>("CompatibilityStatusTextBlock");
                 var compatibilityDetailsTextBlock = this.FindControl<TextBlock>("CompatibilityDetailsTextBlock");
                 
-                Dispatcher.UIThread.Post(() =>
+                if (compatibilityStatusTextBlock != null && compatibilityDetailsTextBlock != null)
                 {
-                    compatibilityStatusTextBlock.Text = "Checking compatibility...";
-                    compatibilityDetailsTextBlock.Text = "Please wait...";
-                });
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        compatibilityStatusTextBlock.Text = "Checking compatibility...";
+                        compatibilityDetailsTextBlock.Text = "Please wait...";
+                    });
+                }
                 
                 // Check device compatibility
                 var compatibilityInfo = await DeviceCompatibilityChecker.CheckDeviceCompatibility();
                 
                 if (compatibilityInfo == null)
                 {
-                    Dispatcher.UIThread.Post(() =>
+                    if (compatibilityStatusTextBlock != null && compatibilityDetailsTextBlock != null)
                     {
-                        compatibilityStatusTextBlock.Text = "Compatibility check failed";
-                        compatibilityDetailsTextBlock.Text = "Could not determine device compatibility";
-                        compatibilityStatusTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                    });
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            compatibilityStatusTextBlock.Text = "Compatibility check failed";
+                            compatibilityDetailsTextBlock.Text = "Could not determine device compatibility";
+                            compatibilityStatusTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+                        });
+                    }
                     
                     return;
                 }
                 
                 // Update UI with compatibility info
-                Dispatcher.UIThread.Post(() =>
+                if (compatibilityStatusTextBlock != null && compatibilityDetailsTextBlock != null)
                 {
-                    compatibilityStatusTextBlock.Text = compatibilityInfo.IsCompatible 
-                        ? "Compatible with Windows 11 23H2" 
-                        : "Not compatible with Windows 11 23H2";
-                    
-                    compatibilityDetailsTextBlock.Text = compatibilityInfo.CompatibilityMessage;
-                    
-                    compatibilityStatusTextBlock.Foreground = new SolidColorBrush(
-                        compatibilityInfo.IsCompatible ? Colors.Green : Colors.Red);
-                    
-                    // Update device info
-                    var deviceNameTextBlock = this.FindControl<TextBlock>("DeviceNameTextBlock");
-                    deviceNameTextBlock.Text = compatibilityInfo.DeviceName;
-                });
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        compatibilityStatusTextBlock.Text = compatibilityInfo.IsCompatible 
+                            ? "Compatible with Windows 11 23H2" 
+                            : "Not compatible with Windows 11 23H2";
+                        
+                        compatibilityDetailsTextBlock.Text = compatibilityInfo.CompatibilityMessage;
+                        
+                        compatibilityStatusTextBlock.Foreground = new SolidColorBrush(
+                            compatibilityInfo.IsCompatible ? Colors.Green : Colors.Red);
+                        
+                        // Update device info
+                        var deviceNameTextBlock = this.FindControl<TextBlock>("DeviceNameTextBlock");
+                        if (deviceNameTextBlock != null)
+                        {
+                            deviceNameTextBlock.Text = compatibilityInfo.DeviceName;
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error checking device compatibility");
                 
-                Dispatcher.UIThread.Post(() =>
+                var compatibilityStatusTextBlock = this.FindControl<TextBlock>("CompatibilityStatusTextBlock");
+                var compatibilityDetailsTextBlock = this.FindControl<TextBlock>("CompatibilityDetailsTextBlock");
+                
+                if (compatibilityStatusTextBlock != null && compatibilityDetailsTextBlock != null)
                 {
-                    var compatibilityStatusTextBlock = this.FindControl<TextBlock>("CompatibilityStatusTextBlock");
-                    var compatibilityDetailsTextBlock = this.FindControl<TextBlock>("CompatibilityDetailsTextBlock");
-                    
-                    compatibilityStatusTextBlock.Text = "Compatibility check failed";
-                    compatibilityDetailsTextBlock.Text = $"Error: {ex.Message}";
-                    compatibilityStatusTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-                });
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        compatibilityStatusTextBlock.Text = "Compatibility check failed";
+                        compatibilityDetailsTextBlock.Text = $"Error: {ex.Message}";
+                        compatibilityStatusTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+                    });
+                }
             }
         }
         
@@ -281,13 +320,16 @@ namespace Deployer.Avalonia.UI.Views
             try
             {
                 var logsTextBox = this.FindControl<TextBox>("LogsTextBox");
-                var logContent = await LoggingService.Instance.GetLogContent();
-                
-                Dispatcher.UIThread.Post(() =>
+                if (logsTextBox != null)
                 {
-                    logsTextBox.Text = logContent;
-                    logsTextBox.CaretIndex = logContent.Length;
-                });
+                    var logContent = await LoggingService.Instance.GetLogContent();
+                    
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        logsTextBox.Text = logContent;
+                        logsTextBox.CaretIndex = logContent.Length;
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -341,3 +383,4 @@ namespace Deployer.Avalonia.UI.Views
         }
     }
 }
+
