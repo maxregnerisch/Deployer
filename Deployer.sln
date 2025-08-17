@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Wim", "src\Deploye
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Core.Pending", "src\Zafiro.Core.Pending\Zafiro.Core.Pending.csproj", "{EEDF5FF5-2DF8-47EC-AAB2-50EAB4AEAE77}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Lumia", "src\Deployer.Lumia\Deployer.Lumia.csproj", "{8EAFD894-7089-4E54-9AC6-3643B95F1687}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{2D49C35A-E3D2-425E-B3C9-ABD8277EDBB6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Console", "src\Deployer.Console\Deployer.Console.csproj", "{7BAF8C5A-38A6-4FB0-A9E6-376AA60C7211}"
@@ -139,6 +141,10 @@ Global
 		{EEDF5FF5-2DF8-47EC-AAB2-50EAB4AEAE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEDF5FF5-2DF8-47EC-AAB2-50EAB4AEAE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEDF5FF5-2DF8-47EC-AAB2-50EAB4AEAE77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EAFD894-7089-4E54-9AC6-3643B95F1687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EAFD894-7089-4E54-9AC6-3643B95F1687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EAFD894-7089-4E54-9AC6-3643B95F1687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EAFD894-7089-4E54-9AC6-3643B95F1687}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2D49C35A-E3D2-425E-B3C9-ABD8277EDBB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D49C35A-E3D2-425E-B3C9-ABD8277EDBB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D49C35A-E3D2-425E-B3C9-ABD8277EDBB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -169,3 +175,4 @@ Global
 		SolutionGuid = {6C56F5EE-AB66-433B-973A-4A854B07F988}
 	EndGlobalSection
 EndGlobal
+
