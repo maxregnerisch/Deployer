@@ -8,5 +8,6 @@
 
     <Application.Styles>
         <FluentTheme Mode="Light"/>
+        <StyleInclude Source="avares://Deployer.Avalonia/UI/Styles/ModernTheme.axaml"/>
     </Application.Styles>
 </Application>

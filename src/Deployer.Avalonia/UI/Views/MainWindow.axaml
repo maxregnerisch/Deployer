@@ -103,6 +103,10 @@
                 </Grid>
             </TabItem>
             
+            <TabItem Header="23H2 Features">
+                <Deployer.Avalonia.UI.Views.Windows23H2FeaturesView/>
+            </TabItem>
+            
             <TabItem Header="Device Info">
                 <Grid RowDefinitions="Auto,*" Margin="10">
                     <TextBlock Grid.Row="0" Text="Device Information" Classes="Heading"/>
@@ -172,7 +176,9 @@
                             • Optimized deployment process<LineBreak/>
                             • Advanced device compatibility checking<LineBreak/>
                             • Detailed logging and diagnostics<LineBreak/>
-                            • Support for more device models
+                            • Support for more device models<LineBreak/>
+                            • 23H2 specific features and optimizations<LineBreak/>
+                            • Improved performance and stability
                         </TextBlock>
                         
                         <TextBlock Text="Links" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,5"/>
@@ -192,4 +198,3 @@
         </Grid>
     </Grid>
 </Window>
-

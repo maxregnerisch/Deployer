@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Deployer.Avalonia.UI.Views.Windows23H2FeaturesView">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Windows 11 23H2 Features" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="Explore the new features and enhancements in Windows 11 23H2" TextWrapping="Wrap"/>
+        </StackPanel>
+        
+        <!-- Content -->
+        <TabControl Grid.Row="1">
+            <!-- New Features Tab -->
+            <TabItem Header="New Features">
+                <ScrollViewer>
+                    <StackPanel Spacing="10" Margin="10">
+                        <TextBlock Text="New Features in Windows 11 23H2" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="Windows 11 23H2 introduces several new features and improvements:" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        
+                        <ItemsControl Name="FeaturesItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#20000000" BorderThickness="1" CornerRadius="4" Margin="0,5" Padding="10">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            
+            <!-- System Requirements Tab -->
+            <TabItem Header="System Requirements">
+                <ScrollViewer>
+                    <StackPanel Spacing="10" Margin="10">
+                        <TextBlock Text="System Requirements for Windows 11 23H2" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="Make sure your system meets these requirements before upgrading:" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        
+                        <ItemsControl Name="RequirementsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#20000000" BorderThickness="1" CornerRadius="4" Margin="0,5" Padding="10">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Key}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Value}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            
+            <!-- Optimizations Tab -->
+            <TabItem Header="Optimizations">
+                <ScrollViewer>
+                    <StackPanel Spacing="10" Margin="10">
+                        <TextBlock Text="Optimizations for Windows 11 23H2" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="Apply these optimizations to improve performance and user experience:" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        
+                        <ItemsControl Name="OptimizationsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#20000000" BorderThickness="1" CornerRadius="4" Margin="0,5" Padding="10">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <TextBlock Grid.Column="0" Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                            <Button Grid.Column="1" Content="Apply" Name="ApplyButton" Tag="{Binding}" Click="OnApplyOptimizationClicked" Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Footer -->
+        <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <Button Content="Check System Compatibility" HorizontalAlignment="Left" Click="OnCheckCompatibilityClicked"/>
+            <TextBlock Name="CompatibilityResultTextBlock" Margin="0,10,0,0" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
+
