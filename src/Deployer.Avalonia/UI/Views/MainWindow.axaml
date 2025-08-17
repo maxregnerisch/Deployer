@@ -1,0 +1,195 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Deployer.Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="Deployer.Avalonia.UI.Views.MainWindow"
+        Icon="/Assets/Hearth.png"
+        Title="Deployer 3 - Windows 11 23H2 Edition"
+        MinWidth="800" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        
+        <Style Selector="TextBlock.Heading">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,10,0,20"/>
+        </Style>
+        
+        <Style Selector="TextBlock.Subheading">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,10,0,10"/>
+        </Style>
+        
+        <Style Selector="ProgressBar">
+            <Setter Property="Height" Value="15"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Background="{DynamicResource SystemAccentColor}" Padding="15">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Source="/Assets/Hearth.png" Width="32" Height="32" Margin="0,0,10,0"/>
+                <TextBlock Text="Deployer 3" FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                <TextBlock Text="Windows 11 23H2 Edition" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Name="ThemeToggleButton" Content="🌙" Click="OnThemeToggleClicked" Background="Transparent" Padding="5" Margin="5,0"/>
+                <Button Name="SettingsButton" Content="⚙️" Click="OnSettingsClicked" Background="Transparent" Padding="5" Margin="5,0"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Main Content -->
+        <TabControl Grid.Row="1" Margin="10">
+            <TabItem Header="Deploy">
+                <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+                    <TextBlock Grid.Row="0" Text="Windows 11 23H2 Deployment" Classes="Heading"/>
+                    
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel>
+                            <!-- Device Selection -->
+                            <TextBlock Text="Select Target Device" Classes="Subheading"/>
+                            <ComboBox Name="DeviceSelector" Width="400" HorizontalAlignment="Left" Margin="0,5,0,15"/>
+                            
+                            <!-- Windows Image Selection -->
+                            <TextBlock Text="Select Windows Image" Classes="Subheading"/>
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,15">
+                                <TextBox Grid.Column="0" Name="ImagePathTextBox" Watermark="Path to Windows image (.wim, .esd, .iso)"/>
+                                <Button Grid.Column="1" Content="Browse" Click="OnBrowseImageClicked"/>
+                            </Grid>
+                            
+                            <!-- Options -->
+                            <TextBlock Text="Deployment Options" Classes="Subheading"/>
+                            <StackPanel Margin="0,5,0,15">
+                                <CheckBox Name="CompactOsCheckBox" Content="Use Compact OS (saves disk space)" IsChecked="True"/>
+                                <CheckBox Name="OptimizePerformanceCheckBox" Content="Optimize for performance" IsChecked="True"/>
+                                <CheckBox Name="DisableTelemetryCheckBox" Content="Disable telemetry" IsChecked="True"/>
+                                <CheckBox Name="EnableDarkModeCheckBox" Content="Enable dark mode" IsChecked="False"/>
+                            </StackPanel>
+                            
+                            <!-- Advanced Options -->
+                            <Expander Header="Advanced Options" Margin="0,5,0,15">
+                                <StackPanel Margin="10">
+                                    <CheckBox Name="CustomPartitioningCheckBox" Content="Use custom partitioning" IsChecked="False"/>
+                                    <CheckBox Name="InjectDriversCheckBox" Content="Inject custom drivers" IsChecked="False"/>
+                                    <CheckBox Name="BootDebugCheckBox" Content="Enable boot debugging" IsChecked="False"/>
+                                    <CheckBox Name="DisableSecureBootCheckBox" Content="Disable Secure Boot" IsChecked="False"/>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                    
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Name="CancelButton" Content="Cancel" Click="OnCancelClicked" IsEnabled="False"/>
+                        <Button Name="DeployButton" Content="Deploy Windows 11 23H2" Click="OnDeployClicked"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="Device Info">
+                <Grid RowDefinitions="Auto,*" Margin="10">
+                    <TextBlock Grid.Row="0" Text="Device Information" Classes="Heading"/>
+                    
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel>
+                            <TextBlock Text="System Information" Classes="Subheading"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,5,0,15">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Device Name:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Name="DeviceNameTextBlock" Text="Loading..." Margin="0,5"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Manufacturer:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Name="ManufacturerTextBlock" Text="Loading..." Margin="0,5"/>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Processor:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Name="ProcessorTextBlock" Text="Loading..." Margin="0,5"/>
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Memory:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Name="MemoryTextBlock" Text="Loading..." Margin="0,5"/>
+                                
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Storage:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Name="StorageTextBlock" Text="Loading..." Margin="0,5"/>
+                                
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Graphics:" FontWeight="SemiBold" Margin="0,5,10,5"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Name="GraphicsTextBlock" Text="Loading..." Margin="0,5"/>
+                            </Grid>
+                            
+                            <TextBlock Text="Windows 11 23H2 Compatibility" Classes="Subheading"/>
+                            <Border BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,5,0,15">
+                                <StackPanel>
+                                    <TextBlock Name="CompatibilityStatusTextBlock" Text="Checking compatibility..." FontWeight="SemiBold"/>
+                                    <TextBlock Name="CompatibilityDetailsTextBlock" Text="Please wait..." TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Button Name="RefreshDeviceInfoButton" Content="Refresh Device Information" HorizontalAlignment="Left" Click="OnRefreshDeviceInfoClicked"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="Logs">
+                <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+                    <TextBlock Grid.Row="0" Text="Application Logs" Classes="Heading"/>
+                    
+                    <TextBox Grid.Row="1" Name="LogsTextBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,5"/>
+                    
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Name="ClearLogsButton" Content="Clear Logs" Click="OnClearLogsClicked"/>
+                        <Button Name="ExportLogsButton" Content="Export Logs" Click="OnExportLogsClicked"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="About">
+                <Grid RowDefinitions="Auto,*" Margin="10">
+                    <TextBlock Grid.Row="0" Text="About Deployer 3" Classes="Heading"/>
+                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Deployer 3 - Windows 11 23H2 Edition" FontSize="18" FontWeight="SemiBold" Margin="0,5"/>
+                        <TextBlock Name="VersionTextBlock" Text="Version 23H2" Margin="0,5"/>
+                        
+                        <TextBlock Text="Features" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,5">
+                            • Full support for Windows 11 23H2<LineBreak/>
+                            • Enhanced UI with dark mode support<LineBreak/>
+                            • Optimized deployment process<LineBreak/>
+                            • Advanced device compatibility checking<LineBreak/>
+                            • Detailed logging and diagnostics<LineBreak/>
+                            • Support for more device models
+                        </TextBlock>
+                        
+                        <TextBlock Text="Links" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,5"/>
+                        <Button Content="Visit GitHub Repository" Click="OnVisitGitHubClicked" HorizontalAlignment="Left"/>
+                        <Button Content="Check for Updates" Click="OnCheckForUpdatesClicked" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Status Bar -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="10">
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <ProgressBar Name="ProgressBar" IsIndeterminate="False" Value="0" Minimum="0" Maximum="100"/>
+                <TextBlock Name="StatusTextBlock" Text="Ready" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
+

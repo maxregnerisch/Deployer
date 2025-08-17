@@ -1,0 +1,203 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ master, main, codegen-bot/** ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release Type'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - beta
+          - stable
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Test
+      run: dotnet test --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+
+    - name: Upload build artifacts
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          src/Deployer.Gui/bin/Release/net7.0/
+          !**/*.pdb
+        retention-days: 7
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: artifacts
+
+    - name: Determine version
+      id: version
+      run: |
+        if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+          $version = "23h2-${{ github.event.inputs.release_type }}-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+        } else {
+          $version = "${{ github.ref_name }}".Replace('v', '')
+        }
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+
+    - name: Create Windows Installer
+      run: |
+        # Install Inno Setup
+        choco install innosetup -y
+        
+        # Create installer script
+        $innoScript = @"
+        #define MyAppName "Deployer 3"
+        #define MyAppVersion "${{ steps.version.outputs.VERSION }}"
+        #define MyAppPublisher "maxregnerisch"
+        #define MyAppURL "https://github.com/maxregnerisch/Deployer"
+        #define MyAppExeName "Deployer.Desktop.exe"
+
+        [Setup]
+        AppId={{F8E4A66D-C321-4A58-B0D8-4C0C5F0D2E81}
+        AppName={#MyAppName}
+        AppVersion={#MyAppVersion}
+        AppPublisher={#MyAppPublisher}
+        AppPublisherURL={#MyAppURL}
+        AppSupportURL={#MyAppURL}
+        AppUpdatesURL={#MyAppURL}
+        DefaultDirName={autopf}\{#MyAppName}
+        DefaultGroupName={#MyAppName}
+        AllowNoIcons=yes
+        LicenseFile=LICENSE
+        OutputDir=installer
+        OutputBaseFilename=Deployer-Setup-{#MyAppVersion}
+        Compression=lzma
+        SolidCompression=yes
+        WizardStyle=modern
+        PrivilegesRequired=admin
+
+        [Languages]
+        Name: "english"; MessagesFile: "compiler:Default.isl"
+
+        [Tasks]
+        Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+        [Files]
+        Source: "artifacts\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+        [Icons]
+        Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+        Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+        [Run]
+        Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+        "@
+
+        # Write script to file
+        $innoScript | Out-File -FilePath "installer.iss" -Encoding UTF8
+        
+        # Create installer
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+
+    - name: Create ZIP package
+      run: |
+        Compress-Archive -Path artifacts\* -DestinationPath "Deployer-${{ steps.version.outputs.VERSION }}.zip"
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', steps.version.outputs.VERSION) }}
+        name: Deployer ${{ steps.version.outputs.VERSION }}
+        draft: false
+        prerelease: ${{ github.event.inputs.release_type == 'beta' || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') }}
+        files: |
+          installer/Deployer-Setup-${{ steps.version.outputs.VERSION }}.exe
+          Deployer-${{ steps.version.outputs.VERSION }}.zip
+        body: |
+          # Deployer ${{ steps.version.outputs.VERSION }}
+          
+          ## Windows 11 23H2 Release with New Features and Improvements
+          
+          ### New Features
+          - Enhanced UI with improved responsiveness and modern design
+          - Full support for Windows 11 23H2
+          - Windows23H2ImageService with optimized deployment
+          - Windows23H2BootCreator for enhanced boot configuration
+          - WindowsVersionDetector for 23H2 compatibility
+          - DeviceCompatibilityChecker for hardware validation
+          - ThemeManager with dark mode support
+          - ProgressIndicator for all operations
+          - LoggingService with export capabilities
+          - AutoUpdateService for seamless updates
+          
+          ### Performance Optimizations
+          - Optimized boot configuration for faster startup
+          - Memory compression settings for better performance
+          - Registry optimizations for Windows 11 23H2
+          - Improved SSD performance settings
+          - Faster image deployment process
+          - Optimized UEFI boot sequence
+          - Better resource management
+          
+          ### UI Improvements
+          - Redesigned main interface with Avalonia UI
+          - Dark mode and light mode themes
+          - Responsive layout for all screen sizes
+          - Real-time progress indicators
+          - Enhanced error notifications
+          - Detailed logging with export options
+          - Improved accessibility features
+          
+          ### Download
+          - [Installer](https://github.com/maxregnerisch/Deployer/releases/download/${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', steps.version.outputs.VERSION) }}/Deployer-Setup-${{ steps.version.outputs.VERSION }}.exe)
+          - [Portable ZIP](https://github.com/maxregnerisch/Deployer/releases/download/${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', steps.version.outputs.VERSION) }}/Deployer-${{ steps.version.outputs.VERSION }}.zip)

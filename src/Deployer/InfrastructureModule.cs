@@ -21,6 +21,9 @@ namespace Deployer
             builder.RegisterType<FileSystem>().As<IFileSystem>();
             builder.RegisterType<Parser>().As<IParser>();
             builder.RegisterType<RequirementsAnalyzer>().As<IRequirementsAnalyzer>();
+            
+            // Register Windows 23H2 module
+            builder.RegisterModule<Windows23H2Module>();
         }
     }
 }
