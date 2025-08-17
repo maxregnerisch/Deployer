@@ -2,11 +2,11 @@ name: Build and Release
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main, codegen-bot/** ]
     tags:
       - 'v*'
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
   workflow_dispatch:
     inputs:
       release_type:
@@ -166,35 +166,38 @@ jobs:
         body: |
           # Deployer ${{ steps.version.outputs.VERSION }}
           
-          ## 23H2 Release with New Features and Improvements
+          ## Windows 11 23H2 Release with New Features and Improvements
           
           ### New Features
           - Enhanced UI with improved responsiveness and modern design
-          - Support for Windows 11 23H2
-          - Improved device detection and compatibility
-          - Advanced partition management
-          - Faster deployment process
-          - Better error handling and recovery options
-          - Support for more device models
-          - Automatic updates
+          - Full support for Windows 11 23H2
+          - Windows23H2ImageService with optimized deployment
+          - Windows23H2BootCreator for enhanced boot configuration
+          - WindowsVersionDetector for 23H2 compatibility
+          - DeviceCompatibilityChecker for hardware validation
+          - ThemeManager with dark mode support
+          - ProgressIndicator for all operations
+          - LoggingService with export capabilities
+          - AutoUpdateService for seamless updates
           
-          ### Bug Fixes
-          - Fixed installation issues on certain devices
-          - Resolved UI freezing during long operations
-          - Fixed memory leaks during large file operations
-          - Improved stability during deployment
-          - Better handling of network interruptions
-          - Fixed compatibility issues with latest Windows builds
+          ### Performance Optimizations
+          - Optimized boot configuration for faster startup
+          - Memory compression settings for better performance
+          - Registry optimizations for Windows 11 23H2
+          - Improved SSD performance settings
+          - Faster image deployment process
+          - Optimized UEFI boot sequence
+          - Better resource management
           
           ### UI Improvements
-          - Redesigned main interface for better usability
-          - Dark mode support
-          - Progress indicators for all operations
+          - Redesigned main interface with Avalonia UI
+          - Dark mode and light mode themes
+          - Responsive layout for all screen sizes
+          - Real-time progress indicators
+          - Enhanced error notifications
           - Detailed logging with export options
-          - Improved notifications
-          - Responsive layout for different screen sizes
+          - Improved accessibility features
           
           ### Download
           - [Installer](https://github.com/maxregnerisch/Deployer/releases/download/${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', steps.version.outputs.VERSION) }}/Deployer-Setup-${{ steps.version.outputs.VERSION }}.exe)
           - [Portable ZIP](https://github.com/maxregnerisch/Deployer/releases/download/${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', steps.version.outputs.VERSION) }}/Deployer-${{ steps.version.outputs.VERSION }}.zip)
-
