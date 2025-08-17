@@ -35,14 +35,14 @@ jobs:
         
     - name: Upload Console Artifact
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Deployer.Console
         path: publish/console
         
     - name: Upload GUI Artifact
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Deployer.Gui
         path: publish/gui
