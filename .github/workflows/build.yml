@@ -31,7 +31,7 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
         dotnet publish src/Deployer.Console/Deployer.Console.csproj -c Release -o publish/console
-        dotnet publish src/Deployer.Gui/Deployer.Gui.csproj -c Release -o publish/gui
+        dotnet publish src/Deployer.Gui/Deployer.Desktop.csproj -c Release -o publish/gui
         
     - name: Upload Console Artifact
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
