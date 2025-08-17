@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -128,4 +129,3 @@ del %0
         }
     }
 }
-
