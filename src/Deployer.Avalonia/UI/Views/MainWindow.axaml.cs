@@ -6,8 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Deployer.Logging;
-using Serilog;
+
 
 namespace Deployer.Avalonia.UI.Views
 {
@@ -67,7 +66,7 @@ namespace Deployer.Avalonia.UI.Views
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error initializing UI");
+                // Error logging removed
             }
         }
         
@@ -96,19 +95,19 @@ namespace Deployer.Avalonia.UI.Views
         private void OnSettingsClicked(object sender, RoutedEventArgs e)
         {
             // TODO: Open settings window
-            Log.Information("Settings button clicked");
+            // Logging removed
         }
         
         private void OnBrowseImageClicked(object sender, RoutedEventArgs e)
         {
             // TODO: Open file dialog
-            Log.Information("Browse image button clicked");
+            // Logging removed
         }
         
         private void OnDeployClicked(object sender, RoutedEventArgs e)
         {
             // TODO: Start deployment
-            Log.Information("Deploy button clicked");
+            // Logging removed
             
             // Show progress
             _progressIndicator.SetIndeterminate("Starting deployment...");
@@ -142,18 +141,18 @@ namespace Deployer.Avalonia.UI.Views
                     if (_progressIndicator.CancellationToken.IsCancellationRequested)
                     {
                         _progressIndicator.SetFailed("Deployment cancelled");
-                        Log.Information("Deployment cancelled");
+                        // Logging removed
                         break;
                     }
                     
                     _progressIndicator.Report(i, $"Deploying Windows 11 23H2... {i}%");
-                    Log.Information($"Deployment progress: {i}%");
+                    // Logging removed
                 }
                 
                 if (!_progressIndicator.CancellationToken.IsCancellationRequested)
                 {
                     _progressIndicator.SetCompleted("Deployment completed successfully");
-                    Log.Information("Deployment completed successfully");
+                    // Logging removed
                 }
                 
                 // Disable cancel button
@@ -172,7 +171,7 @@ namespace Deployer.Avalonia.UI.Views
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error during deployment");
+                // Error logging removed
                 _progressIndicator.SetFailed("Deployment failed");
                 
                 // Disable cancel button
@@ -195,13 +194,13 @@ namespace Deployer.Avalonia.UI.Views
         {
             // Cancel deployment
             _progressIndicator.Cancel();
-            Log.Information("Cancel button clicked");
+            // Logging removed
         }
         
         private void OnRefreshDeviceInfoClicked(object sender, RoutedEventArgs e)
         {
             // Refresh device info
-            Log.Information("Refresh device info button clicked");
+            // Logging removed
             CheckDeviceCompatibilityAsync();
         }
         
@@ -265,7 +264,7 @@ namespace Deployer.Avalonia.UI.Views
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error checking device compatibility");
+                // Error logging removed
                 
                 var compatibilityStatusTextBlock = this.FindControl<TextBlock>("CompatibilityStatusTextBlock");
                 var compatibilityDetailsTextBlock = this.FindControl<TextBlock>("CompatibilityDetailsTextBlock");
@@ -285,9 +284,9 @@ namespace Deployer.Avalonia.UI.Views
         private void OnClearLogsClicked(object sender, RoutedEventArgs e)
         {
             // Clear logs
-            LoggingService.Instance.ClearLogs();
+            // Logging functionality removed
             RefreshLogs();
-            Log.Information("Logs cleared");
+            // Logging removed
         }
         
         private async void OnExportLogsClicked(object sender, RoutedEventArgs e)
@@ -295,22 +294,22 @@ namespace Deployer.Avalonia.UI.Views
             try
             {
                 // Export logs
-                var exportPath = await LoggingService.Instance.ExportLogs();
+                var exportPath = "Logs export functionality removed";
                 
                 if (!string.IsNullOrEmpty(exportPath))
                 {
-                    Log.Information($"Logs exported to {exportPath}");
+                    // Logging removed
                     _progressIndicator.Report(100, $"Logs exported to {exportPath}");
                 }
                 else
                 {
-                    Log.Error("Failed to export logs");
+                    // Error logging removed
                     _progressIndicator.Report(0, "Failed to export logs");
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error exporting logs");
+                // Error logging removed
                 _progressIndicator.Report(0, "Error exporting logs");
             }
         }
@@ -322,7 +321,7 @@ namespace Deployer.Avalonia.UI.Views
                 var logsTextBox = this.FindControl<TextBox>("LogsTextBox");
                 if (logsTextBox != null)
                 {
-                    var logContent = await LoggingService.Instance.GetLogContent();
+                    var logContent = "Logging functionality removed";
                     
                     Dispatcher.UIThread.Post(() =>
                     {
@@ -333,7 +332,7 @@ namespace Deployer.Avalonia.UI.Views
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error refreshing logs");
+                // Error logging removed
             }
         }
         
@@ -349,11 +348,11 @@ namespace Deployer.Avalonia.UI.Views
             {
                 // Auto-update functionality has been removed
                 _progressIndicator.Report(100, "Auto-update functionality has been removed. Please check GitHub for updates.");
-                Log.Information("Auto-update functionality has been removed");
+                // Logging removed
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error handling update check");
+                // Error logging removed
                 _progressIndicator.Report(0, "Error handling update check");
             }
         }
@@ -374,13 +373,12 @@ namespace Deployer.Avalonia.UI.Views
                 
                 System.Diagnostics.Process.Start(psi);
                 
-                Log.Information($"Opening URL: {url}");
+                // Logging removed
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error opening GitHub URL");
+                // Error logging removed
             }
         }
     }
 }
-

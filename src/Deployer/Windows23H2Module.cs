@@ -1,6 +1,6 @@
 using System.IO.Abstractions;
 using Autofac;
-using Deployer.Logging;
+
 using Zafiro.System.Windows;
 
 namespace Deployer
@@ -15,10 +15,7 @@ namespace Deployer
             // Register Windows 23H2 boot creator
             builder.RegisterDecorator<Windows23H2BootCreator, IBootCreator>();
             
-            // Register logging service
-            builder.RegisterInstance(LoggingService.Instance)
-                .AsSelf()
-                .SingleInstance();
+            // Logging service registration removed
             
             // Auto update service has been removed
             
