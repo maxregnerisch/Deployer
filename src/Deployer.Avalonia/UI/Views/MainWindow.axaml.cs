@@ -7,7 +7,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Deployer.Logging;
-using Deployer.Updates;
 using Serilog;
 
 namespace Deployer.Avalonia.UI.Views
@@ -38,8 +37,7 @@ namespace Deployer.Avalonia.UI.Views
             // Initialize UI
             InitializeUI();
             
-            // Check for updates
-            CheckForUpdatesAsync();
+            // Removed auto-update functionality
             
             // Check device compatibility
             CheckDeviceCompatibilityAsync();
@@ -56,7 +54,7 @@ namespace Deployer.Avalonia.UI.Views
             {
                 // Set version text
                 var versionTextBlock = this.FindControl<TextBlock>("VersionTextBlock");
-                versionTextBlock.Text = $"Version {AutoUpdateService.Instance.CurrentVersion}";
+                versionTextBlock.Text = $"Version 23H2";
                 
                 // Initialize logs
                 RefreshLogs();
@@ -297,57 +295,24 @@ namespace Deployer.Avalonia.UI.Views
             }
         }
         
-        private async void CheckForUpdatesAsync()
+        // Auto-update functionality has been removed
+        private void CheckForUpdatesAsync()
         {
-            try
-            {
-                var updateInfo = await AutoUpdateService.Instance.CheckForUpdates();
-                
-                if (updateInfo != null)
-                {
-                    // Show update notification
-                    _progressIndicator.Report(100, $"Update available: {updateInfo.NewVersion}");
-                    Log.Information($"Update available: {updateInfo.NewVersion}");
-                }
-                else
-                {
-                    Log.Information("No updates available");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error checking for updates");
-            }
+            // This method is intentionally empty as auto-update functionality has been removed
         }
         
-        private async void OnCheckForUpdatesClicked(object sender, RoutedEventArgs e)
+        private void OnCheckForUpdatesClicked(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Show checking status
-                _progressIndicator.SetIndeterminate("Checking for updates...");
-                
-                // Check for updates
-                var updateInfo = await AutoUpdateService.Instance.CheckForUpdates(true);
-                
-                if (updateInfo != null)
-                {
-                    // Show update notification
-                    _progressIndicator.Report(100, $"Update available: {updateInfo.NewVersion}");
-                    Log.Information($"Update available: {updateInfo.NewVersion}");
-                    
-                    // TODO: Show update dialog
-                }
-                else
-                {
-                    _progressIndicator.Report(100, "No updates available");
-                    Log.Information("No updates available");
-                }
+                // Auto-update functionality has been removed
+                _progressIndicator.Report(100, "Auto-update functionality has been removed. Please check GitHub for updates.");
+                Log.Information("Auto-update functionality has been removed");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error checking for updates");
-                _progressIndicator.Report(0, "Error checking for updates");
+                Log.Error(ex, "Error handling update check");
+                _progressIndicator.Report(0, "Error handling update check");
             }
         }
         
@@ -376,4 +341,3 @@ namespace Deployer.Avalonia.UI.Views
         }
     }
 }
-

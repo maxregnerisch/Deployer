@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using Autofac;
 using Deployer.Logging;
-using Deployer.Updates;
 using Zafiro.System.Windows;
 
 namespace Deployer
@@ -21,10 +20,7 @@ namespace Deployer
                 .AsSelf()
                 .SingleInstance();
             
-            // Register auto update service
-            builder.RegisterInstance(AutoUpdateService.Instance)
-                .AsSelf()
-                .SingleInstance();
+            // Auto update service has been removed
             
             // Register device compatibility checker
             builder.RegisterType<DeviceCompatibilityChecker>()
@@ -38,4 +34,3 @@ namespace Deployer
         }
     }
 }
-
