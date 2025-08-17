@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+      
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      
+    - name: Publish
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: |
+        dotnet publish src/Deployer.Console/Deployer.Console.csproj -c Release -o publish/console
+        dotnet publish src/Deployer.Gui/Deployer.Gui.csproj -c Release -o publish/gui
+        
+    - name: Upload Console Artifact
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Deployer.Console
+        path: publish/console
+        
+    - name: Upload GUI Artifact
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Deployer.Gui
+        path: publish/gui
+
