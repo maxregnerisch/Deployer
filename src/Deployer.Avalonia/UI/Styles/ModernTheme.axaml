@@ -1,0 +1,120 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Modern Button Style -->
+    <Style Selector="Button.Modern">
+        <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="15,8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                <BrushTransition Property="Background" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="RenderTransform" Value="none"/>
+    </Style>
+    
+    <Style Selector="Button.Modern:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
+        <Setter Property="RenderTransform" Value="scale(1.02)"/>
+    </Style>
+    
+    <Style Selector="Button.Modern:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+    
+    <!-- Card Style -->
+    <Style Selector="Border.Card">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="Margin" Value="0,0,0,15"/>
+        <Setter Property="BoxShadow" Value="0 2 10 0 #20000000"/>
+    </Style>
+    
+    <!-- Section Header Style -->
+    <Style Selector="TextBlock.SectionHeader">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,15,0,10"/>
+    </Style>
+    
+    <!-- Modern TextBox Style -->
+    <Style Selector="TextBox.Modern">
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    
+    <!-- Modern ComboBox Style -->
+    <Style Selector="ComboBox.Modern">
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    
+    <!-- Modern CheckBox Style -->
+    <Style Selector="CheckBox.Modern">
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+    
+    <!-- Modern TabControl Style -->
+    <Style Selector="TabControl.Modern">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="TabControl.Modern > TabItem">
+        <Setter Property="Padding" Value="15,10"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    
+    <Style Selector="TabControl.Modern > TabItem:selected">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}"/>
+    </Style>
+    
+    <!-- Modern ProgressBar Style -->
+    <Style Selector="ProgressBar.Modern">
+        <Setter Property="Height" Value="6"/>
+        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"/>
+    </Style>
+    
+    <!-- Status Text Style -->
+    <Style Selector="TextBlock.Status">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,5,0,0"/>
+    </Style>
+    
+    <!-- Success Text Style -->
+    <Style Selector="TextBlock.Success">
+        <Setter Property="Foreground" Value="#0A8754"/>
+    </Style>
+    
+    <!-- Error Text Style -->
+    <Style Selector="TextBlock.Error">
+        <Setter Property="Foreground" Value="#D32F2F"/>
+    </Style>
+    
+    <!-- Warning Text Style -->
+    <Style Selector="TextBlock.Warning">
+        <Setter Property="Foreground" Value="#F57C00"/>
+    </Style>
+    
+    <!-- Info Text Style -->
+    <Style Selector="TextBlock.Info">
+        <Setter Property="Foreground" Value="#1976D2"/>
+    </Style>
+</Styles>
+

@@ -1,0 +1,79 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    env:
+      Solution_Name: Deployer.sln
+      Configuration: Release
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build
+      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ env.Configuration }} --no-restore
+
+    - name: Test
+      run: dotnet test ${{ env.Solution_Name }} --configuration ${{ env.Configuration }} --no-build --verbosity normal
+
+    - name: Publish Windows
+      if: github.event_name != 'pull_request'
+      run: |
+        dotnet publish src/Deployer.Avalonia/Deployer.Avalonia.csproj -c ${{ env.Configuration }} -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish/win-x64
+
+    - name: Upload Build Artifacts
+      if: github.event_name != 'pull_request'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Deployer-Windows-x64
+        path: publish/win-x64
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download Windows Build
+      uses: actions/download-artifact@v3
+      with:
+        name: Deployer-Windows-x64
+        path: Deployer-Windows-x64
+
+    - name: Create ZIP Archive
+      run: |
+        cd Deployer-Windows-x64
+        zip -r ../Deployer-Windows-x64.zip .
+        cd ..
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          Deployer-Windows-x64.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+
